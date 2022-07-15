@@ -1,12 +1,7 @@
 ﻿using Dapper.Application.Repositories;
 using Dapper.Core;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dapper.Infrastructure.Repositories
 {
@@ -27,7 +22,7 @@ namespace Dapper.Infrastructure.Repositories
                 connection.Open();
                 var result = await connection.ExecuteAsync(sql, entity);
                 return result;
-            }
+                }
         }
 
         public async Task<int> DeleteAsync(int id)

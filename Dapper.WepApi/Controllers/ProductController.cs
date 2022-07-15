@@ -1,7 +1,7 @@
 ﻿using Dapper.Application.Repositories;
 using Dapper.Core;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace Dapper.WepApi.Controllers
 {
@@ -57,6 +57,66 @@ namespace Dapper.WepApi.Controllers
         {
             var data = await unitOfWork.ProductRepository.UpdateAsync(product);
             return Ok(data);
+        }
+
+        [HttpGet]
+        [Route("download")]
+        public async Task<IActionResult> Download([FromQuery] string fileUrl)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory() + "\\Resources", "Images", fileUrl);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
+
+            var memory = new MemoryStream();
+            await using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(filePath), filePath);
+        }
+
+        [HttpGet]
+        [Route("getFiles")]
+        public async Task<IActionResult> GetFiles()
+        {
+            try
+            {
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToRead=Path.Combine(Directory.GetCurrentDirectory(),folderName);
+                var files=Directory.EnumerateFiles(pathToRead)
+                    .Where(IsValidFile)
+                    .Select(fullPath => Path.Combine(folderName,Path.GetFileName(fullPath)));
+
+                return Ok(new { files });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private string GetContentType(string path)
+        {
+            var provider =new  FileExtensionContentTypeProvider();
+            string contentType;
+
+            if(!provider.TryGetContentType(path, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return contentType;
+        }
+
+        private bool IsValidFile(string fileName)
+        {
+            return fileName.EndsWith(".txt",StringComparison.OrdinalIgnoreCase)
+                || fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
