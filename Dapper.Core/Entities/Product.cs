@@ -1,7 +1,10 @@
-﻿namespace Dapper.Core
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Dapper.Core
 {
     public class Product
     {
+        [Key]
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Barcode { get; set; }

@@ -1,4 +1,8 @@
+using AutoMapper;
 using Dapper.Infrastructure;
+using Dapper.WepApi;
+using Dapper.WepApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +18,19 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<AppDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddDbContext<UserDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("UserDbConnection"));
+});
 
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
 builder.Services.AddInfrastructure();
+
 builder.Logging.AddFile("Logs/mylog-{Date}.txt");
 
 var app = builder.Build();

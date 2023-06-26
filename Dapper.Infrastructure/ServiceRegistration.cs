@@ -10,6 +10,7 @@ namespace Dapper.Infrastructure
         {
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
             
         }
     }

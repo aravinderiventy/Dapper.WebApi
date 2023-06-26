@@ -33,6 +33,7 @@ namespace Dapper.WepApi.Controllers
             }
             
         }
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -86,10 +87,10 @@ namespace Dapper.WepApi.Controllers
             try
             {
                 var folderName = Path.Combine("Resources", "Images");
-                var pathToRead=Path.Combine(Directory.GetCurrentDirectory(),folderName);
-                var files=Directory.EnumerateFiles(pathToRead)
+                var pathToRead = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var files = Directory.EnumerateFiles(pathToRead)
                     .Where(IsValidFile)
-                    .Select(fullPath => Path.Combine(folderName,Path.GetFileName(fullPath)));
+                    .Select(fullPath => Path.Combine(folderName, Path.GetFileName(fullPath)));
 
                 return Ok(new { files });
             }
@@ -99,7 +100,7 @@ namespace Dapper.WepApi.Controllers
                 throw;
             }
         }
-
+        #region private methods
         private string GetContentType(string path)
         {
             var provider =new  FileExtensionContentTypeProvider();
@@ -118,5 +119,7 @@ namespace Dapper.WepApi.Controllers
             return fileName.EndsWith(".txt",StringComparison.OrdinalIgnoreCase)
                 || fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase);
         }
+
+        #endregion
     }
 }

@@ -10,9 +10,12 @@ namespace Dapper.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         public IProductRepository ProductRepository { get; }
-        public UnitOfWork(IProductRepository productRepository)
+        public IUserRepository UserRepository { get; }
+
+        public UnitOfWork(IProductRepository productRepository, IUserRepository userRepository)
         {
-            ProductRepository=productRepository;
+            UserRepository = userRepository;
+            ProductRepository = productRepository;
         }
     }
 }
